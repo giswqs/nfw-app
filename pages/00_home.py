@@ -8,17 +8,11 @@ def Page():
     
     ### Introduction
 
-    **A collection of [Solara](https://github.com/widgetti/solara) web apps for geospatial applications.**
+    An interactive web app for mapping surface depressions.
 
-    Just a proof-of-concept for now. Not all features are working yet. More features will be added in the future. Click on the menu above to see the other pages.
-
-    - Web App: <https://giswqs-solara-geospatial.hf.space>
-    - GitHub: <https://github.com/opengeos/solara-geospatial>
-    - Hugging Face: <https://huggingface.co/spaces/giswqs/solara-geospatial>
-
-    ### Demos
-
-    ![](https://i.imgur.com/4uIEnAJ.gif)
+    - Web App: <https://giswqs-nfw-app.hf.space>
+    - GitHub: <https://github.com/giswqs/nfw-app>
+    - Hugging Face: <https://huggingface.co/spaces/giswqs/nfw-app>
 
     """
 
