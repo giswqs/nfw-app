@@ -56,8 +56,6 @@ def Page():
             on_center=center.set,
             scroll_wheel_zoom=True,
             add_google_map=True,
-            height="700px"
+            height="800px"
 
         )
-        solara.Text(f"Zoom: {zoom.value}")
-        solara.Text(f"Center: {center.value}")
