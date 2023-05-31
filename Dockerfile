@@ -6,6 +6,7 @@ RUN mamba install -c conda-forge leafmap geopandas localtileserver -y && \
 
 COPY requirements.txt .
 RUN pip install -r requirements.txt
+RUN pip install -U git+https://github.com/gee-community/geemap.git
 
 RUN mkdir ./pages
 COPY /pages ./pages
