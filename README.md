@@ -1,6 +1,6 @@
 ---
 title: NFW
-emoji: 🌍
+emoji: 🌐
 colorFrom: green
 colorTo: red
 sdk: docker
