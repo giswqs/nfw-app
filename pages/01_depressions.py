@@ -1,4 +1,3 @@
-
 import ee
 import geemap
 
@@ -13,10 +12,10 @@ class Map(geemap.Map):
         super().__init__(**kwargs)
         self.add_data()
         self.add_layer_manager(opened=False)
-        self.add_inspector(opened=True)
-    
-    def add_data(self):
+        names = ["NED 10m", "NHD-HU8 Vector"]
+        self.add_inspector(names=names, visible=False, opened=True)
 
+    def add_data(self):
         self.setCenter(-99.00, 47.01, 8)
 
         ned = ee.Image("USGS/3DEP/10m")
@@ -30,7 +29,9 @@ class Map(geemap.Map):
         style = {"color": "00000088", "fillColor": "00000000", "width": 1}
 
         palette = ["006633", "E5FFCC", "662A00", "D8D8D8", "F5F5F5"]
-        self.addLayer(ned, {'min': 0, 'max': 4000, 'palette': palette}, 'NED 10m', False)
+        self.addLayer(
+            ned, {'min': 0, 'max': 4000, 'palette': palette}, 'NED 10m', False
+        )
         self.addLayer(hillshade, {}, "NED Hillshade", False)
 
         states = ee.FeatureCollection("TIGER/2018/States")
@@ -39,17 +40,21 @@ class Map(geemap.Map):
         gfplain250 = ee.Image("projects/sat-io/open-datasets/GFPLAIN250/NA")
         states = ee.FeatureCollection('users/giswqs/public/us_states')
         fp_image = gfplain250.clipToCollection(states)
-        self.addLayer(fp_image,{'palette':"#002B4D"},'Floodplain raster', False)
+        self.addLayer(fp_image, {'palette': "#002B4D"}, 'Floodplain raster', False)
 
         fp_style = {'fillColor': '0000ff88'}
-        self.addLayer(floodplain.style(**fp_style), {}, 'Floodplain vector', False) 
+        self.addLayer(floodplain.style(**fp_style), {}, 'Floodplain vector', False)
+        self.addLayer(huc8, {}, "NHD-HU8 Vector", False)
         self.addLayer(huc8.style(**style), {}, "NHD-HU8")
-        self.addLayer(pipestem_hu8.style(**{"color": "ffff00ff", "fillColor": "00000000", "width": 2}), {}, "Pipestem HU8")
-
-
+        self.addLayer(
+            pipestem_hu8.style(
+                **{"color": "ffff00ff", "fillColor": "00000000", "width": 2}
+            ),
+            {},
+            "Pipestem HU8",
+        )
 
     def add_ee_data(self):
-
         # Add Earth Engine dataset
         dem = ee.Image('USGS/SRTMGL1_003')
         landsat7 = ee.Image('LANDSAT/LE7_TOA_5YEAR/1999_2003').select(
@@ -69,7 +74,8 @@ class Map(geemap.Map):
         self.addLayer(
             landsat7,
             {'bands': ['B4', 'B3', 'B2'], 'min': 20, 'max': 200, 'gamma': 2.0},
-            'Landsat 7', False
+            'Landsat 7',
+            False,
         )
         self.addLayer(states, {}, "US States")
 
@@ -84,6 +90,5 @@ def Page():
             on_center=center.set,
             scroll_wheel_zoom=True,
             add_google_map=True,
-            height="800px"
-
+            height="800px",
         )
