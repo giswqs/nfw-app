@@ -12,7 +12,8 @@ center = solara.reactive([40, -100])
 class Map(geemap.Map):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.add_layer_manager(opened=False)
+        self.add("layer_manager")
+        # self.add_layer_manager(opened=False)
         self.add_data()
         names = ["NED 10m", "Depressions", "NWI Vector"]
         # self.add_buttons()
@@ -37,20 +38,20 @@ class Map(geemap.Map):
 
         palette = ["006633", "E5FFCC", "662A00", "D8D8D8", "F5F5F5"]
         self.addLayer(
-            ned, {'min': 0, 'max': 4000, 'palette': palette}, 'NED 10m', False
+            ned, {"min": 0, "max": 4000, "palette": palette}, "NED 10m", False
         )
         self.addLayer(hillshade, {}, "NED Hillshade", False)
 
         states = ee.FeatureCollection("TIGER/2018/States")
-        floodplain = ee.FeatureCollection('users/giswqs/floodplain/GFP250m')
+        floodplain = ee.FeatureCollection("users/giswqs/floodplain/GFP250m")
 
         gfplain250 = ee.Image("projects/sat-io/open-datasets/GFPLAIN250/NA")
-        states = ee.FeatureCollection('users/giswqs/public/us_states')
+        states = ee.FeatureCollection("users/giswqs/public/us_states")
         fp_image = gfplain250.clipToCollection(states)
-        self.addLayer(fp_image, {'palette': "#002B4D"}, 'Floodplain raster', False)
+        self.addLayer(fp_image, {"palette": "#002B4D"}, "Floodplain raster", False)
 
-        fp_style = {'fillColor': '0000ff88'}
-        self.addLayer(floodplain.style(**fp_style), {}, 'Floodplain vector', False)
+        fp_style = {"fillColor": "0000ff88"}
+        self.addLayer(floodplain.style(**fp_style), {}, "Floodplain vector", False)
         self.addLayer(huc8, {}, "NHD-HU8 Vector", False)
         self.addLayer(huc8.style(**style), {}, "NHD-HU8 Raster")
         self.addLayer(
@@ -61,7 +62,9 @@ class Map(geemap.Map):
             "Pipestem HU8",
         )
 
-        self.add_legend(builtin_legend="NWI", position='bottomleft', title='NWI Wetland Type')
+        self.add_legend(
+            builtin_legend="NWI", position="bottomleft", title="NWI Wetland Type"
+        )
 
         def add_buttons(self, opened=True):
 
@@ -73,7 +76,9 @@ class Map(geemap.Map):
                 value=False,
                 tooltip="Toolbar",
                 icon="hand-o-up",
-                layout=widgets.Layout(width="28px", height="28px", padding="0px 0px 0px 4px"),
+                layout=widgets.Layout(
+                    width="28px", height="28px", padding="0px 0px 0px 4px"
+                ),
             )
 
             close_button = widgets.ToggleButton(
@@ -81,7 +86,9 @@ class Map(geemap.Map):
                 tooltip="Close the tool",
                 icon="times",
                 button_style="primary",
-                layout=widgets.Layout(height="28px", width="28px", padding="0px 0px 0px 4px"),
+                layout=widgets.Layout(
+                    height="28px", width="28px", padding="0px 0px 0px 4px"
+                ),
             )
 
             buttons = widgets.ToggleButtons(
@@ -93,9 +100,15 @@ class Map(geemap.Map):
             buttons.style.button_width = "87px"
             # buttons.value = "Watershed"
 
-            label = widgets.Label("Click on the map to select a watershed", padding="0px 0px 0px 4px", style=style)
+            label = widgets.Label(
+                "Click on the map to select a watershed",
+                padding="0px 0px 0px 4px",
+                style=style,
+            )
 
-            output = widgets.Output(layout=widgets.Layout(width=widget_width, padding=padding))
+            output = widgets.Output(
+                layout=widgets.Layout(width=widget_width, padding=padding)
+            )
             toolbar_widget = widgets.VBox()
             toolbar_widget.children = [toolbar_button]
             toolbar_header = widgets.HBox()
@@ -121,7 +134,10 @@ class Map(geemap.Map):
                 if change["new"]:
                     toolbar_button.value = False
                     self.toolbar_reset()
-                    if self.tool_control is not None and self.tool_control in self.controls:
+                    if (
+                        self.tool_control is not None
+                        and self.tool_control in self.controls
+                    ):
                         self.remove_control(self.tool_control)
                         self.tool_control = None
                     toolbar_widget.close()
@@ -134,25 +150,40 @@ class Map(geemap.Map):
 
                     def handle_interaction(**kwargs):
                         latlon = kwargs.get("coordinates")
-                        if kwargs.get("type") == "click" and buttons.value == "Watershed":
+                        if (
+                            kwargs.get("type") == "click"
+                            and buttons.value == "Watershed"
+                        ):
                             self.layers = self.layers[:n_layers]
                             self.default_style = {"cursor": "wait"}
                             clicked_point = ee.Geometry.Point(latlon[::-1])
                             selected = huc8.filterBounds(clicked_point)
                             watershed_bbox = selected.geometry().bounds()
                             huc_id = selected.first().get("huc8").getInfo()
-                            self.addLayer(selected.style(**{"color": "ff0000ff", "fillColor": "00000000"}), {}, "HU8-" + huc_id)
+                            self.addLayer(
+                                selected.style(
+                                    **{"color": "ff0000ff", "fillColor": "00000000"}
+                                ),
+                                {},
+                                "HU8-" + huc_id,
+                            )
 
-                            label.value = F"Watershed HU8: {huc_id}"
+                            label.value = f"Watershed HU8: {huc_id}"
 
                             hillshade_clip = hillshade.clipToCollection(selected)
                             self.addLayer(hillshade_clip, {}, "Hillshade")
                             depression_id = "users/giswqs/depressions/" + huc_id
                             depressions = ee.FeatureCollection(depression_id)
-                            self.addLayer(depressions, {}, "Depressions")
+                            try:
+                                self.addLayer(depressions, {}, "Depressions")
+                            except Exception as e:
+                                print(e)
                             nwi_id = "users/giswqs/NWI-HU8/HU8_" + huc_id + "_Wetlands"
-                            nwi = ee.FeatureCollection(nwi_id)
-                            self.addLayer(nwi, {}, "NWI Vector")
+                            try:
+                                nwi = ee.FeatureCollection(nwi_id)
+                                self.addLayer(nwi, {}, "NWI Vector")
+                            except Exception as e:
+                                print(e)
 
                             types = [
                                 "Freshwater Forested/Shrub Wetland",
@@ -178,8 +209,13 @@ class Map(geemap.Map):
 
                             fillColor = [c + "A8" for c in colors]
                             nwi_color = geemap.ee_vector_style(
-                                nwi, column='WETLAND_TY', labels=types, fillColor=fillColor, color='00000000')
-                        
+                                nwi,
+                                column="WETLAND_TY",
+                                labels=types,
+                                fillColor=fillColor,
+                                color="00000000",
+                            )
+
                             self.addLayer(nwi_color, {}, "NWI Raster")
                             # sel_state = states.filterBounds(clicked_point).first().get('STUSPS').getInfo()
                             # asset = 'projects/sat-io/open-datasets/NHD/NHD_' + sel_state + '/'
@@ -187,10 +223,9 @@ class Map(geemap.Map):
                             # nhd_area = ee.FeatureCollection(asset + 'NHDArea')
                             # nhd_flowline = ee.FeatureCollection(asset + 'NHDFlowline')
                             # nhd_line = ee.FeatureCollection(asset + 'NHDLine')
-                            
-
 
                             self.default_style = {"cursor": "default"}
+
                     self.on_interaction(handle_interaction)
 
                     with output:
@@ -203,12 +238,10 @@ class Map(geemap.Map):
                     buttons.value = "Watershed"
                     label.value = "Click on the map to select a watershed"
 
-
-                
                 # buttons.value = None
 
-            buttons.observe(button_clicked, "value") 
-            buttons.value = "Watershed"        
+            buttons.observe(button_clicked, "value")
+            buttons.value = "Watershed"
 
             toolbar_button.value = opened
             buttons_control = ipyleaflet.WidgetControl(
@@ -220,6 +253,7 @@ class Map(geemap.Map):
                 self.tool_control = buttons_control
 
         add_buttons(self, opened=True)
+
 
 @solara.component
 def Page():
