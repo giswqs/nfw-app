@@ -12,7 +12,7 @@ center = solara.reactive([40, -100])
 class Map(geemap.Map):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.add("layer_manager")
+        self.add_layer_manager(opened=False)
         # self.add_layer_manager(opened=False)
         self.add_data()
         names = ["NED 10m", "Depressions", "NWI Vector"]
@@ -20,6 +20,9 @@ class Map(geemap.Map):
         self.add_inspector(names=names, visible=False, opened=True)
 
     def add_data(self):
+
+        url = "https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}"
+        self.add_tile_layer(url, name="Google Satellite", attribution="Google")
 
         n_layers = 9
 
@@ -235,7 +238,7 @@ class Map(geemap.Map):
                     label.value = "Click on the map to inspect data"
                     output.clear_output()
                 elif change["new"] == "Deactivate":
-                    buttons.value = "Watershed"
+                    buttons.value = None
                     label.value = "Click on the map to select a watershed"
 
                 # buttons.value = None
@@ -263,7 +266,6 @@ def Page():
             on_zoom=zoom.set,
             center=center.value,
             on_center=center.set,
-            scroll_wheel_zoom=True,
-            add_google_map=True,
-            height="800px",
+            # scroll_wheel_zoom=True,
+            # height="600px",
         )

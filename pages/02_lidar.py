@@ -11,6 +11,7 @@ class Map(geemap.Map):
         super().__init__(**kwargs)
         # Add what you want below
         self.add_data()
+        self.add_layer_manager(opened=False)
 
     def add_data(self, **kwargs):
         url = "https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}"
