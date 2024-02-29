@@ -22,9 +22,6 @@ class Map(geemap.Map):
             url=dem_wms, layers=layer, name="Hillshade", format="image/png", shown=True
         )
 
-        nwi_wms = "https://fwspublicservices.wiself.usgs.gov/wetlandsmapservice/services/Wetlands/MapServer/WMSServer"
-        self.add_wms_layer(url=nwi_wms, layers="1", name="NWI", format="image/png")
-
         huc12 = ee.FeatureCollection("USGS/WBD/2017/HUC12")
         collection = ee.ImageCollection("USGS/3DEP/1m")
         style = {"color": "0000ff88", "fillColor": "00000000", "width": 1}
@@ -33,7 +30,10 @@ class Map(geemap.Map):
             collection, {"min": 0, "max": 4000, "palette": "terrain"}, "3DEP", True, 0.5
         )
 
-        self.add_layer(huc12, {}, "HU-12 Vector", False)
+        nwi_wms = "https://fwspublicservices.wiself.usgs.gov/wetlandsmapservice/services/Wetlands/MapServer/WMSServer"
+        self.add_wms_layer(url=nwi_wms, layers="1", name="NWI", format="image/png")
+
+        # self.add_layer(huc12, {}, "HU-12 Vector", False)
         self.add_layer(
             huc12.style(**style),
             {},
