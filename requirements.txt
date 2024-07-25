@@ -1,5 +1,4 @@
-geemap>=0.21.0
-leafmap
-mapwidget
+git+https://github.com/gee-community/geemap.git
+git+https://github.com/opengeos/leafmap.git
 solara
 geopandas
