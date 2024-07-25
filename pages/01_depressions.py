@@ -266,6 +266,7 @@ def Page():
             on_zoom=zoom.set,
             center=center.value,
             on_center=center.set,
+            height="750px",
             # scroll_wheel_zoom=True,
             # height="600px",
         )

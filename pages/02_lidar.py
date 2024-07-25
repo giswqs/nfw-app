@@ -55,6 +55,7 @@ def Page():
             center=center.value,
             on_center=center.set,
             scroll_wheel_zoom=True,
+            height="750px",
         )
         # solara.Text(f"Zoom: {zoom.value}")
         # solara.Text(f"Center: {center.value}")
