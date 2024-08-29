@@ -1,8 +1,4 @@
-import os
-import ee
 import geemap
-import ipywidgets as widgets
-from IPython.display import display
 import solara
 
 

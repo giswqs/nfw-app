@@ -1,8 +1,5 @@
-import os
-import ee
 import geemap
 import ipywidgets as widgets
-from IPython.display import display
 import solara
 from geemap import get_current_year, jslink_slider_label
 

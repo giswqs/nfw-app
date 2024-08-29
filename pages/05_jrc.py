@@ -1,4 +1,3 @@
-import os
 import ee
 import geemap
 import ipywidgets as widgets
