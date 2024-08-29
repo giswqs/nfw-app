@@ -5,7 +5,7 @@ RUN mamba install -c conda-forge leafmap geopandas localtileserver -y && \
     fix-permissions "/home/${NB_USER}"
 
 USER root
-RUN apt-get update && apt-get install -y git
+RUN apt-get update && apt-get install -y git ffmpeg
 RUN pip install -U git+https://github.com/gee-community/geemap.git
 
 COPY requirements.txt .
