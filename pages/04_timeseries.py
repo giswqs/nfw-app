@@ -12,6 +12,7 @@ class Map(geemap.Map):
         super().__init__(**kwargs)
         self.add_basemap("Esri.WorldImagery")
         self.add_ts_gui(position="topright")
+        self._toolbar.toggle_layers(False)
 
     def clean_up(self):
         if hasattr(self, "slider_ctrl") and self.slider_ctrl is not None:

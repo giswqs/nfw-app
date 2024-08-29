@@ -4,7 +4,7 @@ import solara
 @solara.component
 def Page():
     markdown = """
-    ## Solara for Geospatial Applications
+    ## Mapping Non-Floodplain Wetlands
 
     ### Introduction
 

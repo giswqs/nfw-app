@@ -11,6 +11,7 @@ class Map(geemap.Map):
         super().__init__(**kwargs)
         self.add_basemap("Esri.WorldImagery")
         self.add_gui("timelapse", basemap=None)
+        self._toolbar.toggle_layers(False)
 
 
 @solara.component

@@ -18,6 +18,7 @@ class Map(geemap.Map):
         names = ["NED 10m", "Depressions", "NWI Vector"]
         # self.add_buttons()
         self.add_inspector(names=names, visible=False, opened=True)
+        self._toolbar.toggle_layers(False)
 
     def add_data(self):
 

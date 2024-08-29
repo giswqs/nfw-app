@@ -12,6 +12,7 @@ class Map(geemap.Map):
         self.add_basemap("Esri.WorldImagery")
         self.add_ee_data()
         self.add_buttons(add_header=True)
+        self._toolbar.toggle_layers(False)
 
     def add_ee_data(self):
 
